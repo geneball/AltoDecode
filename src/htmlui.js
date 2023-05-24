@@ -75,9 +75,15 @@ export class HUI {
 		opt.value = nm
 		return opt
 	}
-	static setClass( el, cls, enable ){		// 'enable'/disable class 'cls' of element 'el'
+	static hasClass( el, cls ){
 		el = HUI.gEl( el )
-		if ( el.classList.contains( cls )){
+		return el.classList.contains( cls )
+	}
+	static setClass( el, cls, enable ){		// 'enable'/disable class 'cls' of element 'el'  enable undefined => toggle
+		el = HUI.gEl( el )
+		let hascls = el.classList.contains( cls )
+		if (enable==undefined) enable = !hascls
+		if ( hascls ){
 			if (!enable) el.classList.remove( cls );
 		} else {
 			if (enable) el.classList.add( cls );
@@ -247,6 +253,7 @@ export class GUI {
 			case 'file':
 				lblcls += ' guibx'
 				//fall thru
+			case 'number':
 			case 'button':
 			case 'text':
 				el = HUI.newEl( 'input', id, 'gui' )
@@ -293,6 +300,12 @@ export class GUI {
 	}
 	addButton( str, fn ){
 		let id = this.addItem( '', 'button', str, fn )
+		if (typeof fn == 'function' ) 
+			HUI.addListener( id, 'click', fn )
+		return id
+	}
+	addNumber( lbl, val, fn ){
+		let id = this.addItem( lbl, 'number', val, fn )
 		if (typeof fn == 'function' ) 
 			HUI.addListener( id, 'click', fn )
 		return id
